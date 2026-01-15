@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="widget_time" type="id"/>
+    <item name="widget_date" type="id"/>
+    <item name="widget_ampm" type="id"/>
+    <item name="analog_clock" type="id"/>
+    <!-- Added circular_battery_clock id for style 3 widget -->
+    <item name="circular_battery_clock" type="id"/>
+</resources>

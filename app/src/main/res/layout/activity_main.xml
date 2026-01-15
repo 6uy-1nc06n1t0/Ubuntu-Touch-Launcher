@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- CONTAINER PRINCIPAL -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <!-- ESPAÇO VAZIO (HOME) com ImageView para wallpaper -->
+        <FrameLayout
+            android:id="@+id/homeBackground"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            
+            <ImageView
+                android:id="@+id/wallpaperView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/default_wallpaper" />
+            
+            <!-- Added widget container for clock widgets -->
+            <FrameLayout
+                android:id="@+id/widgetContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            
+            <!-- Grid fixa de 5 colunas x 11 linhas para apps na tela inicial -->
+            <GridLayout
+                android:id="@+id/desktopGrid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:columnCount="5"
+                android:rowCount="11"
+                android:alignmentMode="alignBounds" />
+            
+            <!-- Círculo branco simples centralizado, 16dp da borda inferior -->
+            <View
+                android:id="@+id/dropZoneCircle"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/drop_zone_circle"
+                android:elevation="8dp"
+                android:alpha="0.9"
+                android:visibility="gone" />
+            
+        </FrameLayout>
+    </LinearLayout>
+
+    <!-- Control panel reposicionado para ficar atrás do dock -->
+    <FrameLayout
+        android:id="@+id/controlPanelContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="72dp"
+        android:background="#B3000000"
+        android:visibility="gone">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Painel de Controle"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="24dp" />
+
+                <!-- 3-Column Grid Layout for Control Toggles -->
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="3"
+                    android:rowCount="3"
+                    android:alignmentMode="alignBounds"
+                    android:layout_marginBottom="24dp">
+
+                    <!-- WiFi Toggle -->
+                    <LinearLayout
+                        android:id="@+id/wifiToggle"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="6dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/control_toggle_bg"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:id="@+id/wifiIcon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_wifi"
+                            android:tint="#DD6200" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="WiFi"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp" />
+
+                    </LinearLayout>
+
+                    <!-- Bluetooth Toggle -->
+                    <LinearLayout
+                        android:id="@+id/bluetoothToggle"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="6dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/control_toggle_bg"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:id="@+id/bluetoothIcon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_bluetooth"
+                            android:tint="#DD6200" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bluetooth"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp" />
+
+                    </LinearLayout>
+
+                    <!-- Airplane Mode Toggle -->
+                    <LinearLayout
+                        android:id="@+id/airplaneModeToggle"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="6dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/control_toggle_bg"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:id="@+id/airplaneModeIcon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_airplane"
+                            android:tint="#DD6200" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Avião"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp" />
+
+                    </LinearLayout>
+
+                    <!-- Flashlight Toggle -->
+                    <LinearLayout
+                        android:id="@+id/flashlightToggle"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="6dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/control_toggle_bg"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:id="@+id/flashlightIcon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_flashlight"
+                            android:tint="#DD6200" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lanterna"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp" />
+
+                    </LinearLayout>
+
+                    <!-- Calculator Toggle -->
+                    <LinearLayout
+                        android:id="@+id/calculatorToggle"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="6dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/control_toggle_bg"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:id="@+id/calculatorIcon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_calculator"
+                            android:tint="#DD6200" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Calculadora"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp" />
+
+                    </LinearLayout>
+
+                    <!-- Location Toggle -->
+                    <LinearLayout
+                        android:id="@+id/locationToggle"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="6dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/control_toggle_bg"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:id="@+id/locationIcon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_location"
+                            android:tint="#DD6200" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Localização"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp" />
+
+                    </LinearLayout>
+
+                </GridLayout>
+
+                <!-- New brightness control with modern pill-shaped design -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Brilho"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- Modern pill-shaped brightness slider -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:background="@drawable/brightness_slider_bg">
+
+                        <!-- Low brightness icon (left side) -->
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_brightness_low"
+                            android:tint="#FFFFFF"
+                            android:layout_gravity="center_vertical|start"
+                            android:layout_marginStart="20dp" />
+
+                        <!-- High brightness icon (right side) -->
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_brightness_high"
+                            android:tint="#FFFFFF"
+                            android:layout_gravity="center_vertical|end"
+                            android:layout_marginEnd="20dp" />
+
+                        <!-- Seekbar overlay -->
+                        <SeekBar
+                            android:id="@+id/brightnessSeekBar"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="64dp"
+                            android:layout_marginEnd="64dp"
+                            android:max="255"
+                            android:progress="128"
+                            android:progressDrawable="@drawable/brightness_progress"
+                            android:thumb="@drawable/brightness_thumb"
+                            android:splitTrack="false"
+                            android:background="@android:color/transparent" />
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </FrameLayout>
+
+    <!-- Gaveta de apps reposicionada para ficar atrás do dock -->
+    <FrameLayout
+        android:id="@+id/appDrawerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="72dp"
+        android:background="#B3000000"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- Added horizontal container for search bar and menu button -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="16dp"
+                android:gravity="center_vertical">
+
+                <EditText
+                    android:id="@+id/searchBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Pesquisar apps..."
+                    android:padding="12dp"
+                    android:background="#33FFFFFF"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#AAAAAA"
+                    android:drawableStart="@android:drawable/ic_menu_search"
+                    android:drawablePadding="8dp"
+                    android:singleLine="true" />
+
+                <!-- Added menu button with three dots icon -->
+                <ImageView
+                    android:id="@+id/btnSortMenu"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@android:drawable/ic_menu_more"
+                    android:layout_marginStart="8dp"
+                    android:padding="12dp"
+                    android:background="@android:color/transparent"
+                    android:tint="#FFFFFF" />
+
+            </LinearLayout>
+
+            <GridView
+                android:id="@+id/appGrid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:numColumns="3"
+                android:horizontalSpacing="16dp"
+                android:verticalSpacing="16dp"
+                android:padding="16dp"
+                android:stretchMode="columnWidth" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <!-- DOCK movido para o final do XML para ter z-index maior e ficar sempre na frente -->
+    <LinearLayout
+        android:id="@+id/dockContainer"
+        android:layout_width="79dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:background="#111111"
+        android:elevation="10dp">
+        
+        <!-- ScrollView para permitir rolagem dos apps quando houver muitos -->
+        <ScrollView
+            android:id="@+id/dockScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="none"
+            android:fillViewport="true"
+            android:overScrollMode="ifContentScrolls">
+
+            <!-- Container dos apps fixados - agora dentro do ScrollView -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:minHeight="0dp">
+                
+                <!-- Espaçador flexível que empurra os apps para o fundo -->
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <!-- Container dos apps fixados - alinhados na parte inferior -->
+                <LinearLayout
+                    android:id="@+id/dockAppsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <!-- Botão da gaveta fixo na parte inferior, fora do ScrollView -->
+        <FrameLayout
+            android:layout_width="72dp"
+            android:layout_height="80dp"
+            android:gravity="center">
+            
+            <ImageView
+                android:id="@+id/btnAppDrawer"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_gravity="bottom"
+                android:src="@drawable/ubuntu_icon"
+                android:scaleType="fitCenter"
+                android:padding="0dp"
+                android:layout_marginBottom="0dp"/>
+                
+        </FrameLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

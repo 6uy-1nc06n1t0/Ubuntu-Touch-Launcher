@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#2D2D2D">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Alterar Papel de Parede"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Opção: Escolher da Galeria -->
+    <LinearLayout
+        android:id="@+id/option_gallery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="#3D3D3D">
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:scaleType="centerCrop"
+            android:background="#555555"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Escolher da Galeria"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:layout_marginStart="16dp" />
+    </LinearLayout>
+
+    <!-- Grid de Wallpapers -->
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:rowCount="2"
+        android:useDefaultMargins="true">
+
+        <!-- Wallpaper Padrão -->
+        <FrameLayout
+            android:id="@+id/option_default"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/default_wallpaper"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="#80000000"
+                android:padding="4dp"
+                android:text="Padrão"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:gravity="center" />
+        </FrameLayout>
+
+        <!-- Ubuntu Gradient -->
+        <FrameLayout
+            android:id="@+id/option_ubuntu_gradient"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/wallpaper_ubuntu_gradient"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="#80000000"
+                android:padding="4dp"
+                android:text="Ubuntu Gradient"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:gravity="center" />
+        </FrameLayout>
+
+        <!-- Ubuntu Logo -->
+        <FrameLayout
+            android:id="@+id/option_ubuntu_logo"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/wallpaper_ubuntu_logo"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="#80000000"
+                android:padding="4dp"
+                android:text="Ubuntu Logo"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:gravity="center" />
+        </FrameLayout>
+
+        <!-- Focal Fossa (Cat) -->
+        <FrameLayout
+            android:id="@+id/option_focal_fossa"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/wallpaper_cat"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="#80000000"
+                android:padding="4dp"
+                android:text="Focal Fossa"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:gravity="center" />
+        </FrameLayout>
+
+    </GridLayout>
+
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancelar"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#DD4814"
+        android:textColor="#FFFFFF" />
+
+</LinearLayout>

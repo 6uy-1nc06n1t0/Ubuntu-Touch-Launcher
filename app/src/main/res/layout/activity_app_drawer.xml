@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/appDrawerOverlayContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#80000000">
+
+    <!-- Drawer content with dock spacing -->
+    <LinearLayout
+        android:id="@+id/drawerContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="72dp"
+        android:background="#B3000000"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true">
+
+        <!-- Search bar and menu button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="16dp"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:id="@+id/overlaySearchBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Pesquisar apps..."
+                android:padding="12dp"
+                android:background="#33FFFFFF"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#AAAAAA"
+                android:drawableStart="@android:drawable/ic_menu_search"
+                android:drawablePadding="8dp"
+                android:singleLine="true" />
+
+            <ImageView
+                android:id="@+id/overlayBtnSortMenu"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@android:drawable/ic_menu_more"
+                android:layout_marginStart="8dp"
+                android:padding="12dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="#FFFFFF" />
+
+        </LinearLayout>
+
+        <GridView
+            android:id="@+id/overlayAppGrid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="3"
+            android:horizontalSpacing="16dp"
+            android:verticalSpacing="16dp"
+            android:padding="16dp"
+            android:stretchMode="columnWidth" />
+
+    </LinearLayout>
+
+</FrameLayout>

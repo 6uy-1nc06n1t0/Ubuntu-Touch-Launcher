@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="8dp">
+
+    <!-- Wrapped ImageView in FrameLayout to support notification badge overlay -->
+    <FrameLayout
+        android:layout_width="64dp"
+        android:layout_height="64dp">
+
+        <!-- App icon -->
+        <ImageView
+            android:id="@+id/appIcon"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:scaleType="fitCenter" />
+
+        <!-- Notification badge positioned at top-left corner -->
+        <TextView
+            android:id="@+id/notificationBadge"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="top|start"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/notification_badge_background"
+            android:gravity="center"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:text="0" />
+
+    </FrameLayout>
+
+    <!-- App label -->
+    <TextView
+        android:id="@+id/appLabel"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_marginTop="8dp"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:text="App Name" />
+
+</LinearLayout>

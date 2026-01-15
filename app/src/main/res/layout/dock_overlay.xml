@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.launcher.BackInterceptLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootOverlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <!-- Background overlay semi-transparente -->
+    <FrameLayout
+        android:id="@+id/backgroundOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:clickable="true"
+        android:focusable="true" />
+
+    <!-- Control Panel container -->
+    <FrameLayout
+        android:id="@+id/overlayControlPanelContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="79dp"
+        android:background="#B3000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Painel de Controle"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="24dp" />
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="3"
+                    android:rowCount="2"
+                    android:alignmentMode="alignBounds"
+                    android:layout_marginBottom="24dp">
+
+                    <!-- WiFi Toggle -->
+                    <LinearLayout
+                        android:id="@+id/overlayWifiToggle"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="6dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/control_toggle_bg"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:id="@+id/overlayWifiIcon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_wifi"
+                            android:tint="#DD6200" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="WiFi"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp" />
+
+                    </LinearLayout>
+
+                    <!-- Bluetooth Toggle -->
+                    <LinearLayout
+                        android:id="@+id/overlayBluetoothToggle"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="6dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/control_toggle_bg"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:id="@+id/overlayBluetoothIcon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_bluetooth"
+                            android:tint="#DD6200" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bluetooth"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp" />
+
+                    </LinearLayout>
+
+                    <!-- Airplane Mode Toggle -->
+                    <LinearLayout
+                        android:id="@+id/overlayAirplaneModeToggle"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="6dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/control_toggle_bg"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:id="@+id/overlayAirplaneModeIcon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_airplane"
+                            android:tint="#DD6200" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Avião"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp" />
+
+                    </LinearLayout>
+
+                    <!-- Flashlight Toggle -->
+                    <LinearLayout
+                        android:id="@+id/overlayFlashlightToggle"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="6dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/control_toggle_bg"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:id="@+id/overlayFlashlightIcon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_flashlight"
+                            android:tint="#DD6200" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lanterna"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp" />
+
+                    </LinearLayout>
+
+                    <!-- Calculator Toggle -->
+                    <LinearLayout
+                        android:id="@+id/overlayCalculatorToggle"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="6dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/control_toggle_bg"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:id="@+id/overlayCalculatorIcon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_calculator"
+                            android:tint="#DD6200" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Calculadora"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp" />
+
+                    </LinearLayout>
+
+                    <!-- Location Toggle -->
+                    <LinearLayout
+                        android:id="@+id/overlayLocationToggle"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="6dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/control_toggle_bg"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:id="@+id/overlayLocationIcon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_location"
+                            android:tint="#DD6200" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Localização"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp" />
+
+                    </LinearLayout>
+
+                </GridLayout>
+
+                <!-- Brightness control -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Brilho"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:background="@drawable/brightness_slider_bg">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_brightness_low"
+                            android:tint="#FFFFFF"
+                            android:layout_gravity="center_vertical|start"
+                            android:layout_marginStart="20dp" />
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_brightness_high"
+                            android:tint="#FFFFFF"
+                            android:layout_gravity="center_vertical|end"
+                            android:layout_marginEnd="20dp" />
+
+                        <SeekBar
+                            android:id="@+id/overlayBrightnessSeekBar"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="64dp"
+                            android:layout_marginEnd="64dp"
+                            android:max="255"
+                            android:progress="128"
+                            android:progressDrawable="@drawable/brightness_progress"
+                            android:thumb="@drawable/brightness_thumb"
+                            android:splitTrack="false"
+                            android:background="@android:color/transparent" />
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </FrameLayout>
+
+    <!-- Dock Container -->
+    <LinearLayout
+        android:id="@+id/overlayDockContainer"
+        android:layout_width="79dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#111111"
+        android:elevation="20dp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- ScrollView para permitir rolagem dos apps quando houver muitos -->
+        <ScrollView
+            android:id="@+id/overlayDockScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="none"
+            android:fillViewport="true"
+            android:overScrollMode="ifContentScrolls">
+
+            <!-- Container vertical com Space para empurrar apps para baixo -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:minHeight="0dp">
+                
+                <!-- Espaçador flexível que empurra os apps para o fundo -->
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <!-- Container dos apps fixados - alinhados na parte inferior -->
+                <LinearLayout
+                    android:id="@+id/overlayDockAppsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <!-- Botão da gaveta fixo na parte inferior, fora do ScrollView -->
+        <FrameLayout
+            android:layout_width="72dp"
+            android:layout_height="80dp"
+            android:gravity="center">
+            
+            <ImageView
+                android:id="@+id/overlayBtnAppDrawer"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_gravity="bottom"
+                android:src="@drawable/ubuntu_icon"
+                android:scaleType="fitCenter"
+                android:padding="0dp"
+                android:layout_marginBottom="0dp"/>
+                
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <!-- App Drawer Container -->
+    <FrameLayout
+        android:id="@+id/appDrawerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="79dp"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:id="@+id/drawerContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="#B3000000">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="16dp"
+                android:gravity="center_vertical">
+
+                <EditText
+                    android:id="@+id/overlaySearchBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Pesquisar apps..."
+                    android:padding="12dp"
+                    android:background="#33FFFFFF"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#AAAAAA"
+                    android:drawableStart="@android:drawable/ic_menu_search"
+                    android:drawablePadding="8dp"
+                    android:singleLine="true"
+                    android:inputType="text"
+                    android:imeOptions="actionSearch" />
+
+                <ImageView
+                    android:id="@+id/overlayBtnSortMenu"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:src="@android:drawable/ic_menu_more"
+                    android:padding="12dp"
+                    android:background="@android:color/transparent"
+                    android:tint="#FFFFFF"
+                    android:contentDescription="Ordenar" />
+
+            </LinearLayout>
+
+            <GridView
+                android:id="@+id/overlayAppGrid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:numColumns="3"
+                android:verticalSpacing="16dp"
+                android:horizontalSpacing="16dp"
+                android:padding="16dp"
+                android:stretchMode="columnWidth"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</com.example.launcher.BackInterceptLayout>
