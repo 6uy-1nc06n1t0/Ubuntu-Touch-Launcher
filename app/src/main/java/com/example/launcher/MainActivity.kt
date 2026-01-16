@@ -171,34 +171,59 @@ class MainActivity : AppCompatActivity() {
     private var pendingIconChangePackage: String? = null
     private val PICK_ICON_REQUEST = 1001
     
-    private val packageRemovedReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == Intent.ACTION_PACKAGE_REMOVED) {
-                val packageName = intent.data?.schemeSpecificPart
-                if (packageName != null) {
-                    onAppUninstalled(packageName)
-                }
-            }
-        }
-    }
-    
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            pickImageLauncher.launch("image/*")
-        } else {
-            Toast.makeText(this, "Permissão necessária para escolher imagem", Toast.LENGTH_SHORT).show()
-        }
-    }
-
     private val pickImageLauncher = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let { setWallpaperFromUri(it) }
     }
 
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            pickImageLauncher.launch("image/*")
+        } else {
+            Toast.makeText(this, "Permissão negada", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private val packageRemovedReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == Intent.ACTION_PACKAGE_REMOVED) {
+                val packageName = intent.data?.schemeSpecificPart ?: return
+                
+                // Remove from dock if pinned
+                if (pinnedApps.contains(packageName)) {
+                    pinnedApps.remove(packageName)
+                    savePinnedApps()
+                    renderPinnedApps()
+                }
+                
+                // Remove from desktop if pinned
+                val positionToRemove = desktopPinnedApps.entries.find { it.value == packageName }?.key
+                if (positionToRemove != null) {
+                    desktopPinnedApps.remove(positionToRemove)
+                    saveDesktopPinnedApps()
+                    setupDesktopGrid() // Changed from renderDesktopApps()
+                }
+                
+                // Remove from folders
+                desktopFolders.values.forEach { folder ->
+                    folder.apps.remove(packageName)
+                }
+                saveDesktopFolders()
+                setupDesktopGrid() // Changed from renderDesktopApps()
+                
+                // Reload app list
+                loadInstalledApps()
+                filterApps(searchBar.text.toString()) // Re-filter to update the visible list
+            }
+        }
+    }
+    // </CHANGE>
+
     private lateinit var customIconManager: CustomIconManager
+    private lateinit var iconShapeManager: IconShapeManager
 
     private var gestureServiceWatcher: GestureServiceWatcher? = null
 
@@ -222,6 +247,8 @@ class MainActivity : AppCompatActivity() {
         }
         
         customIconManager = CustomIconManager(this)
+        iconShapeManager = IconShapeManager(this)
+        // </CHANGE>
         
         // Initialize GestureServiceWatcher
         gestureServiceWatcher = GestureServiceWatcher(this) {
@@ -1381,10 +1408,11 @@ class MainActivity : AppCompatActivity() {
         
         val gridContainer = GridLayout(this).apply {
             columnCount = 2
-            rowCount = 2
-            layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
+            // Calculate row count dynamically
+            rowCount = (folder.apps.size + 2) / 2 // Fixed to 2x2 grid
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
             )
             setPadding(4, 4, 4, 4)
         }
@@ -2081,14 +2109,17 @@ class MainActivity : AppCompatActivity() {
     private fun renderPinnedApps() {
         dockAppsContainer.removeAllViews()
         val pm = packageManager
-
+        
         // O layout_gravity="bottom" no XML faz os apps ficarem na parte inferior
         for ((index, packageName) in pinnedApps.withIndex()) {
             try {
                 val appInfo = pm.getApplicationInfo(packageName, 0)
                 val defaultIcon = appInfo.loadIcon(pm)
                 
+                // Aplica shape ao ícone do dock
+                // </CHANGE> Corrigido: primeiro obtem ícone customizado, depois aplica shape
                 val icon = customIconManager.getIconForApp(packageName, defaultIcon)
+                val shapedIcon = iconShapeManager.applyShape(icon, 128)
                 
                 val iconSize = (64 * resources.displayMetrics.density).toInt()
                 val iconContainer = FrameLayout(this).apply {
@@ -2102,7 +2133,8 @@ class MainActivity : AppCompatActivity() {
                 
                 val iconView = ImageView(this).apply {
                     layoutParams = FrameLayout.LayoutParams(iconSize, iconSize)
-                    setImageDrawable(icon)
+                    setImageDrawable(shapedIcon)
+                    // </CHANGE>
                     scaleType = ImageView.ScaleType.FIT_CENTER
                 }
                 iconContainer.addView(iconView)
@@ -2169,7 +2201,7 @@ class MainActivity : AppCompatActivity() {
                                                     val appInfoObj = AppInfo(
                                                         packageName = packageName,
                                                         label = label,
-                                                        icon = icon
+                                                        icon = shapedIcon // Use shaped icon
                                                     )
                                                     pinAppToDesktop(appInfoObj)
                                                     unpinApp(packageName)
@@ -2313,12 +2345,16 @@ class MainActivity : AppCompatActivity() {
                 val pkgName = resolveInfo.activityInfo.packageName
                 val defaultIcon = resolveInfo.loadIcon(pm)
                 
+                // Aplica shape ao ícone do app na lista do drawer
+                // </CHANGE>
                 val icon = customIconManager.getIconForApp(pkgName, defaultIcon)
+                val shapedIcon = iconShapeManager.applyShape(icon, 128)
+                // </CHANGE>
                 
                 AppInfo(
                     label = resolveInfo.loadLabel(pm).toString(),
                     packageName = pkgName,
-                    icon = icon
+                    icon = shapedIcon // Use shaped icon
                 )
             }
         

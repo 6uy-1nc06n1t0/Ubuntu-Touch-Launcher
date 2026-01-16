@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -43,11 +44,22 @@ class LauncherSettingsActivity : AppCompatActivity() {
     private lateinit var allPermissionsGranted: TextView
 
     private lateinit var aboutContainer: LinearLayout
+    private lateinit var supportContainer: LinearLayout
+    private lateinit var versionContainer: LinearLayout
     private lateinit var developer1: TextView
     private lateinit var developer2: TextView
 
+    private lateinit var iconShapeManager: IconShapeManager
+    private lateinit var shapeOriginal: LinearLayout
+    private lateinit var shapeSquircle: LinearLayout
+    private lateinit var shapeCircle: LinearLayout
+    private lateinit var shapeRoundedSquare: LinearLayout
+    private lateinit var shapeTeardrop: LinearLayout
+
     // Links dos desenvolvedores (substitua pelos links reais)
-    private val aboutLink = "https://example.com/about" // Link sobre o launcher
+    private val aboutLink = "https://github.com/6uy-1nc06n1t0/Ubuntu-Touch-Launcher" // Link sobre o launcher
+    private val support = "https://github.com/6uy-1nc06n1t0/Ubuntu-Touch-Launcher/issues"
+    private val aboutVersion = "https://github.com/6uy-1nc06n1t0/Ubuntu-Touch-Launcher/releases"
     private val developer1Link = "https://github.com/6uy-1nc06n1t0" // Link do 6uy_1nc06n1t0
     private val developer2Link = "https://github.com/WendelDev21" // Link do WenDev21
 
@@ -61,9 +73,13 @@ class LauncherSettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launcher_settings)
 
+        iconShapeManager = IconShapeManager(this)
+        
         initViews()
         setupClickListeners()
+        setupIconShapeListeners()
         updatePermissionStates()
+        updateIconShapeSelection()
     }
 
     override fun onResume() {
@@ -96,8 +112,18 @@ class LauncherSettingsActivity : AppCompatActivity() {
         allPermissionsGranted = findViewById(R.id.allPermissionsGranted)
 
         aboutContainer = findViewById(R.id.aboutContainer)
-        developer1 = findViewById(R.id.developer1)
-        developer2 = findViewById(R.id.developer2)
+	supportContainer = findViewById(R.id.supportContainer)
+	versionContainer = findViewById(R.id.versionContainer)
+
+	developer1 = findViewById(R.id.developer1)
+	developer2 = findViewById(R.id.developer2)
+
+
+        shapeOriginal = findViewById(R.id.shapeOriginal)
+        shapeSquircle = findViewById(R.id.shapeSquircle)
+        shapeCircle = findViewById(R.id.shapeCircle)
+        shapeRoundedSquare = findViewById(R.id.shapeRoundedSquare)
+        shapeTeardrop = findViewById(R.id.shapeTeardrop)
     }
 
     private fun setupClickListeners() {
@@ -126,8 +152,17 @@ class LauncherSettingsActivity : AppCompatActivity() {
         }
 
         aboutContainer.setOnClickListener {
-            openLink(aboutLink)
-        }
+	    openLink(aboutLink)
+	}
+
+	supportContainer.setOnClickListener {
+	    openLink(support)
+	}
+
+	versionContainer.setOnClickListener {
+	    openLink(aboutVersion)
+	}
+
 
         developer1.setOnClickListener {
             openLink(developer1Link)
@@ -136,6 +171,65 @@ class LauncherSettingsActivity : AppCompatActivity() {
         developer2.setOnClickListener {
             openLink(developer2Link)
         }
+    }
+
+    private fun setupIconShapeListeners() {
+        shapeOriginal.setOnClickListener {
+            iconShapeManager.setIconShape(IconShape.ORIGINAL)
+            updateIconShapeSelection()
+            notifyIconShapeChanged()
+        }
+        
+        shapeSquircle.setOnClickListener {
+            iconShapeManager.setIconShape(IconShape.SQUIRCLE)
+            updateIconShapeSelection()
+            notifyIconShapeChanged()
+        }
+        
+        shapeCircle.setOnClickListener {
+            iconShapeManager.setIconShape(IconShape.CIRCLE)
+            updateIconShapeSelection()
+            notifyIconShapeChanged()
+        }
+        
+        shapeRoundedSquare.setOnClickListener {
+            iconShapeManager.setIconShape(IconShape.ROUNDED_SQUARE)
+            updateIconShapeSelection()
+            notifyIconShapeChanged()
+        }
+        
+        shapeTeardrop.setOnClickListener {
+            iconShapeManager.setIconShape(IconShape.TEARDROP)
+            updateIconShapeSelection()
+            notifyIconShapeChanged()
+        }
+    }
+
+    private fun updateIconShapeSelection() {
+        val currentShape = iconShapeManager.getIconShape()
+        
+        // Resetar todos os backgrounds
+        val shapes = listOf(
+            shapeOriginal to IconShape.ORIGINAL,
+            shapeSquircle to IconShape.SQUIRCLE,
+            shapeCircle to IconShape.CIRCLE,
+            shapeRoundedSquare to IconShape.ROUNDED_SQUARE,
+            shapeTeardrop to IconShape.TEARDROP
+        )
+        
+        shapes.forEach { (view, shape) ->
+            val frameLayout = view.getChildAt(0) as? FrameLayout
+            if (shape == currentShape) {
+                frameLayout?.setBackgroundResource(R.drawable.icon_shape_selected_bg)
+            } else {
+                frameLayout?.setBackgroundResource(R.drawable.icon_shape_selector_bg)
+            }
+        }
+    }
+
+    private fun notifyIconShapeChanged() {
+        val intent = Intent("com.example.launcher.ICON_SHAPE_CHANGED")
+        sendBroadcast(intent)
     }
 
     private fun updatePermissionStates() {

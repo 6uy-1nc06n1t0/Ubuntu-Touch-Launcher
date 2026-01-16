@@ -112,6 +112,8 @@ class EdgeSwipeService : Service() {
     private var pinnedAppsReceiver: BroadcastReceiver? = null
 
     private lateinit var customIconManager: CustomIconManager
+    private lateinit var iconShapeManager: IconShapeManager
+    // </CHANGE>
 
     companion object {
         private const val NOTIFICATION_CHANNEL_ID = "edge_swipe_service_channel"
@@ -124,6 +126,8 @@ class EdgeSwipeService : Service() {
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         
         customIconManager = CustomIconManager(this)
+        iconShapeManager = IconShapeManager(this)
+        // </CHANGE>
         
         cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
         try {
@@ -1321,7 +1325,7 @@ class EdgeSwipeService : Service() {
     private fun renderPinnedApps(dockAppsContainer: LinearLayout) {
         dockAppsContainer.removeAllViews()
         val pm = packageManager
-
+        
         // O layout_gravity="bottom" no XML faz os apps ficarem na parte inferior
         for ((index, packageName) in pinnedApps.withIndex()) {
             try {
@@ -1329,6 +1333,8 @@ class EdgeSwipeService : Service() {
                 val defaultIcon = appInfo.loadIcon(pm)
                 
                 val icon = customIconManager.getIconForApp(packageName, defaultIcon)
+                val shapedIcon = iconShapeManager.applyShape(icon, 128)
+                // </CHANGE>
                 
                 val iconView = ImageView(this)
                 val iconSize = (64 * resources.displayMetrics.density).toInt()
@@ -1338,7 +1344,8 @@ class EdgeSwipeService : Service() {
                 layoutParams.setMargins(0, topMargin, 0, bottomMargin)
                 layoutParams.gravity = Gravity.CENTER_HORIZONTAL
                 iconView.layoutParams = layoutParams
-                iconView.setImageDrawable(icon)
+                iconView.setImageDrawable(shapedIcon)
+                // </CHANGE>
                 iconView.scaleType = ImageView.ScaleType.FIT_CENTER
                 iconView.tag = index
 
@@ -1528,7 +1535,8 @@ class EdgeSwipeService : Service() {
             val iconView = view.findViewById<ImageView>(R.id.appIcon)
             val nameView = view.findViewById<TextView>(R.id.appLabel)
             
-            iconView.setImageDrawable(app.icon)
+            val shapedIcon = (context as EdgeSwipeService).iconShapeManager.applyShape(app.icon, 128)
+            iconView.setImageDrawable(shapedIcon)
             nameView.text = app.label
             
             var touchStartX = 0f
@@ -1568,3 +1576,4 @@ class EdgeSwipeService : Service() {
         }
     }
 }
+

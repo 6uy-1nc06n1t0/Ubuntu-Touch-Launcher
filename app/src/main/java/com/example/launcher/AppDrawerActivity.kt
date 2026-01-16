@@ -57,6 +57,7 @@ class AppDrawerActivity : AppCompatActivity() {
     private lateinit var btnSortMenu: ImageView
     
     private lateinit var customIconManager: CustomIconManager
+    private lateinit var iconShapeManager: IconShapeManager
     
     private var allApps: MutableList<AppInfo> = mutableListOf()
     private var filteredApps: MutableList<AppInfo> = mutableListOf()
@@ -96,12 +97,20 @@ class AppDrawerActivity : AppCompatActivity() {
 
     private var displayItems: MutableList<DrawerItem> = mutableListOf()
 
+    private var highlightedPosition = -1
+    private var dragWasInitiated = false
+    private var hoverStartTime = 0L
+    private var lastHoverPosition = -1
+    private val folderCreationDelay = 500L // 500ms para criar pasta
+    private val HOVER_THRESHOLD_MS = 400L // Reduzido de tempo indefinido para 400ms
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_drawer)
 
         customIconManager = CustomIconManager(this)
-
+        iconShapeManager = IconShapeManager(this)
+        
         appDrawerContainer = findViewById(R.id.appDrawerOverlayContainer)
         drawerContent = findViewById(R.id.drawerContent)
         appGrid = findViewById(R.id.overlayAppGrid)
@@ -232,7 +241,8 @@ class AppDrawerActivity : AppCompatActivity() {
             if (appsInFolders.contains(pkgName)) continue
             
             val defaultIcon = resolveInfo.loadIcon(pm)
-            val icon = customIconManager.getIconForApp(pkgName, defaultIcon)
+            val customIcon = customIconManager.getIconForApp(pkgName, defaultIcon)
+            val icon = iconShapeManager.applyShape(customIcon, 128)
             
             val appInfo = AppInfo(
                 packageName = pkgName,
@@ -253,10 +263,11 @@ class AppDrawerActivity : AppCompatActivity() {
     private fun addLauncherSettingsApp() {
         val settingsIcon = ContextCompat.getDrawable(this, R.drawable.ic_launcher_settings)
         if (settingsIcon != null) {
+            val shapedIcon = iconShapeManager.applyShape(settingsIcon, 128)
             val settingsApp = AppInfo(
                 packageName = LAUNCHER_SETTINGS_PACKAGE,
                 name = "Configurações do Launcher",
-                icon = settingsIcon
+                icon = shapedIcon
             )
             allApps.add(settingsApp)
         }
@@ -352,47 +363,50 @@ class AppDrawerActivity : AppCompatActivity() {
         }
     }
 
-    private var highlightedPosition = -1
-    private var dragWasInitiated = false
-
     private fun setupGridTouchListener() {
+        appGrid.numColumns = 4
+
         appGrid.setOnItemClickListener { _, _, position, _ ->
-            if (position < displayItems.size && !dragWasInitiated) {
-                when (val item = displayItems[position]) {
-                    is DrawerItem.App -> launchApp(item.appInfo.packageName)
-                    is DrawerItem.Folder -> showFolderDialog(item.folderInfo, item.position)
-                }
+            if (isDragging || dragWasInitiated) {
+                dragWasInitiated = false
+                return@setOnItemClickListener
             }
-            dragWasInitiated = false
+
+            when (val item = displayItems.getOrNull(position)) {
+                is DrawerItem.App -> launchApp(item.appInfo.packageName)
+                is DrawerItem.Folder -> showFolderDialog(item.folderInfo, item.position)
+                null -> {}
+            }
         }
         
         appGrid.setOnItemLongClickListener { _, view, position, _ ->
-            if (position < displayItems.size) {
-                when (val item = displayItems[position]) {
-                    is DrawerItem.App -> {
-                        if (item.appInfo.packageName == LAUNCHER_SETTINGS_PACKAGE) {
-                            return@setOnItemLongClickListener true
-                        }
-                        
-                        // Start drag operation
-                        currentDragPackage = item.appInfo.packageName
-                        currentDragPosition = position
-                        isDragging = true
-                        dragWasInitiated = true
-                        
-                        val clipData = ClipData.newPlainText("drawer_folder_app", item.appInfo.packageName)
-                        val shadowBuilder = View.DragShadowBuilder(view)
-                        
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            view.startDragAndDrop(clipData, shadowBuilder, item.appInfo, 0)
-                        } else {
-                            @Suppress("DEPRECATION")
-                            view.startDrag(clipData, shadowBuilder, item.appInfo, 0)
-                        }
+            if (position >= displayItems.size) return@setOnItemLongClickListener false
+
+            when (val item = displayItems[position]) {
+                is DrawerItem.App -> {
+                    if (item.appInfo.packageName == LAUNCHER_SETTINGS_PACKAGE) {
+                        return@setOnItemLongClickListener true
                     }
-                    is DrawerItem.Folder -> {
-                        showFolderOptionsDialog(item.folderInfo, item.position)
+                    
+                    // Start drag operation
+                    currentDragPackage = item.appInfo.packageName
+                    currentDragPosition = position
+                    isDragging = true
+                    dragWasInitiated = true
+                    
+                    // Use the packageName as local state for easier identification
+                    val clipData = ClipData.newPlainText("drawer_folder_app", item.appInfo.packageName)
+                    val shadowBuilder = View.DragShadowBuilder(view)
+                    
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        view.startDragAndDrop(clipData, shadowBuilder, item.appInfo.packageName, 0)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        view.startDrag(clipData, shadowBuilder, item.appInfo.packageName, 0)
                     }
+                }
+                is DrawerItem.Folder -> {
+                    showFolderOptionsDialog(item.folderInfo, item.position)
                 }
             }
             true
@@ -515,6 +529,9 @@ class AppDrawerActivity : AppCompatActivity() {
     private fun handleGridDrag(view: View, event: DragEvent): Boolean {
         when (event.action) {
             DragEvent.ACTION_DRAG_STARTED -> {
+                hoverStartTime = 0L
+                lastHoverPosition = -1
+                highlightedPosition = -1
                 return event.clipDescription?.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN) == true
             }
             
@@ -523,83 +540,111 @@ class AppDrawerActivity : AppCompatActivity() {
             }
             
             DragEvent.ACTION_DRAG_LOCATION -> {
-                val position = appGrid.pointToPosition(event.x.toInt(), event.y.toInt())
-                highlightDropTarget(position)
+                // Calculate position using pointToPosition with event coordinates
+                val gridView = view as GridView
+                val x = event.x.toInt()
+                val y = event.y.toInt()
+                val position = gridView.pointToPosition(x, y)
+                
+                // Highlight target
+                if (position != GridView.INVALID_POSITION && position != currentDragPosition) {
+                    highlightDropTarget(position)
+                } else {
+                    clearDropHighlights()
+                }
+                
+                // Track hover time for visual feedback
+                if (position != lastHoverPosition) {
+                    lastHoverPosition = position
+                    hoverStartTime = System.currentTimeMillis()
+                }
+                
                 return true
             }
             
             DragEvent.ACTION_DRAG_EXITED -> {
                 clearDropHighlights()
+                hoverStartTime = 0L
+                lastHoverPosition = -1
                 return true
             }
             
             DragEvent.ACTION_DROP -> {
                 clearDropHighlights()
                 
-                val draggedAppInfo = event.localState as? AppInfo
+                // Get package from localState (String) instead of AppInfo
+                val draggedPackage = event.localState as? String
                 
-                if (draggedAppInfo != null) {
-                    val draggedPackage = draggedAppInfo.packageName
-                    val targetPosition = appGrid.pointToPosition(event.x.toInt(), event.y.toInt())
-                    
-                    val originalPosition = displayItems.indexOfFirst { 
-                        it is DrawerItem.App && it.appInfo.packageName == draggedPackage 
-                    }
-                    
-                    if (targetPosition != GridView.INVALID_POSITION && 
-                        targetPosition < displayItems.size && 
-                        targetPosition != originalPosition) {
-                        
-                        val targetItem = displayItems[targetPosition]
-                        
-                        when (targetItem) {
-                            is DrawerItem.Folder -> {
-                                // Add to existing folder
-                                if (!targetItem.folderInfo.apps.contains(draggedPackage)) {
-                                    targetItem.folderInfo.apps.add(draggedPackage)
-                                    
-                                    // Remove from allApps
-                                    allApps.removeAll { it.packageName == draggedPackage }
-                                    filteredApps.removeAll { it.packageName == draggedPackage }
-                                    
-                                    saveDrawerFolders()
-                                    buildDisplayItems()
-                                    Toast.makeText(this, "App adicionado à pasta", Toast.LENGTH_SHORT).show()
-                                }
-                            }
+                if (draggedPackage == null || draggedPackage == LAUNCHER_SETTINGS_PACKAGE) {
+                    return true
+                }
+                
+                // Calculate drop position
+                val gridView = view as GridView
+                val x = event.x.toInt()
+                val y = event.y.toInt()
+                val targetPosition = gridView.pointToPosition(x, y)
+                
+                // Find original position of the dragged app
+                val originalPosition = displayItems.indexOfFirst { 
+                    it is DrawerItem.App && it.appInfo.packageName == draggedPackage 
+                }
+                
+                // Validate drop
+                if (targetPosition == GridView.INVALID_POSITION || 
+                    targetPosition >= displayItems.size || 
+                    targetPosition == originalPosition) {
+                    return true
+                }
+                
+                val targetItem = displayItems[targetPosition]
+                
+                when (targetItem) {
+                    is DrawerItem.Folder -> {
+                        // Add app to existing folder
+                        if (!targetItem.folderInfo.apps.contains(draggedPackage)) {
+                            targetItem.folderInfo.apps.add(draggedPackage)
                             
-                            is DrawerItem.App -> {
-                                if (targetItem.appInfo.packageName == LAUNCHER_SETTINGS_PACKAGE) {
-                                    return true
-                                }
-                                
-                                // Create new folder with both apps
-                                if (targetItem.appInfo.packageName != draggedPackage) {
-                                    val newFolderPosition = (drawerFolders.keys.maxOrNull() ?: -1) + 1
-                                    val newFolder = DrawerFolderInfo(
-                                        "Pasta", 
-                                        mutableListOf(targetItem.appInfo.packageName, draggedPackage)
-                                    )
-                                    drawerFolders[newFolderPosition] = newFolder
-                                    
-                                    // Remove both apps from allApps
-                                    allApps.removeAll { 
-                                        it.packageName == draggedPackage || 
-                                        it.packageName == targetItem.appInfo.packageName 
-                                    }
-                                    filteredApps.removeAll { 
-                                        it.packageName == draggedPackage || 
-                                        it.packageName == targetItem.appInfo.packageName 
-                                    }
-                                    
-                                    saveDrawerFolders()
-                                    buildDisplayItems()
-                                    Toast.makeText(this, "Pasta criada", Toast.LENGTH_SHORT).show()
-                                }
-                            }
+                            // Remove app from app list
+                            allApps.removeAll { it.packageName == draggedPackage }
+                            filteredApps.removeAll { it.packageName == draggedPackage }
+                            
+                            saveDrawerFolders()
+                            buildDisplayItems()
+                            Toast.makeText(this, "App adicionado à pasta", Toast.LENGTH_SHORT).show()
                         }
                     }
+                    
+                    is DrawerItem.App -> {
+                        // Do not create folder with settings
+                        if (targetItem.appInfo.packageName == LAUNCHER_SETTINGS_PACKAGE) {
+                            return true
+                        }
+                        
+                        // Create new folder with both apps
+                        val newFolderPosition = (drawerFolders.keys.maxOrNull() ?: -1) + 1
+                        val newFolder = DrawerFolderInfo(
+                            "Pasta", 
+                            mutableListOf(targetItem.appInfo.packageName, draggedPackage)
+                        )
+                        drawerFolders[newFolderPosition] = newFolder
+                        
+                        // Remove both apps from list
+                        allApps.removeAll { 
+                            it.packageName == draggedPackage || 
+                            it.packageName == targetItem.appInfo.packageName 
+                        }
+                        filteredApps.removeAll { 
+                            it.packageName == draggedPackage || 
+                            it.packageName == targetItem.appInfo.packageName 
+                        }
+                        
+                        saveDrawerFolders()
+                        buildDisplayItems()
+                        Toast.makeText(this, "Pasta criada", Toast.LENGTH_SHORT).show()
+                    }
                 }
+                
                 return true
             }
             
@@ -609,6 +654,9 @@ class AppDrawerActivity : AppCompatActivity() {
                 dragWasInitiated = false
                 currentDragPackage = null
                 currentDragPosition = -1
+                hoverStartTime = 0L
+                lastHoverPosition = -1
+                highlightedPosition = -1
                 return true
             }
             
@@ -637,7 +685,6 @@ class AppDrawerActivity : AppCompatActivity() {
             setPadding(48, 32, 48, 32)
         }
         
-        // Folder name header (editable on click)
         val nameView = TextView(this).apply {
             text = folder.name
             textSize = 20f
@@ -647,7 +694,6 @@ class AppDrawerActivity : AppCompatActivity() {
         }
         dialogView.addView(nameView)
         
-        // Grid for folder apps
         val gridContainer = GridLayout(this).apply {
             columnCount = 3
             setPadding(0, 16, 0, 16)
@@ -659,7 +705,8 @@ class AppDrawerActivity : AppCompatActivity() {
             try {
                 val appInfo = pm.getApplicationInfo(appPackage, 0)
                 val defaultIcon = appInfo.loadIcon(pm)
-                val icon = customIconManager.getIconForApp(appPackage, defaultIcon)
+                val customIcon = customIconManager.getIconForApp(appPackage, defaultIcon)
+                val icon = iconShapeManager.applyShape(customIcon, 128)
                 val label = appInfo.loadLabel(pm).toString()
                 
                 val itemView = LinearLayout(this).apply {
@@ -724,13 +771,12 @@ class AppDrawerActivity : AppCompatActivity() {
             .setPositiveButton("Remover") { _, _ ->
                 folder.apps.remove(appPackage)
                 
-                // If folder is empty, remove it
                 if (folder.apps.isEmpty()) {
                     drawerFolders.remove(folderPosition)
                 }
                 
                 saveDrawerFolders()
-                loadInstalledApps() // Reload to add app back to main list
+                loadInstalledApps()
             }
             .setNegativeButton("Cancelar", null)
             .show()
@@ -777,7 +823,7 @@ class AppDrawerActivity : AppCompatActivity() {
             .setPositiveButton("Excluir") { _, _ ->
                 drawerFolders.remove(position)
                 saveDrawerFolders()
-                loadInstalledApps() // Reload to add apps back to main list
+                loadInstalledApps()
             }
             .setNegativeButton("Cancelar", null)
             .show()
@@ -803,7 +849,6 @@ class AppDrawerActivity : AppCompatActivity() {
                 if (customIconManager.removeCustomIcon(packageName)) {
                     Toast.makeText(this, "Ícone restaurado", Toast.LENGTH_SHORT).show()
                     loadInstalledApps()
-                    // Notifica a MainActivity para atualizar o dock
                     sendBroadcast(Intent("com.example.launcher.REFRESH_DOCK"))
                 } else {
                     Toast.makeText(this, "Erro ao restaurar ícone", Toast.LENGTH_SHORT).show()
@@ -824,7 +869,6 @@ class AppDrawerActivity : AppCompatActivity() {
                 if (customIconManager.saveCustomIcon(packageName, imageUri)) {
                     Toast.makeText(this, "Ícone alterado com sucesso", Toast.LENGTH_SHORT).show()
                     loadInstalledApps()
-                    // Notifica a MainActivity para atualizar o dock
                     sendBroadcast(Intent("com.example.launcher.REFRESH_DOCK"))
                 } else {
                     Toast.makeText(this, "Erro ao salvar ícone", Toast.LENGTH_SHORT).show()
@@ -873,7 +917,6 @@ class AppDrawerActivity : AppCompatActivity() {
             prefs.edit().putString("pinned_apps_ordered", pinnedList.joinToString(",")).apply()
             Toast.makeText(this, "App fixado no dock", Toast.LENGTH_SHORT).show()
             
-            // Notify MainActivity to refresh dock
             val intent = Intent("com.example.launcher.REFRESH_DOCK")
             sendBroadcast(intent)
         } else {

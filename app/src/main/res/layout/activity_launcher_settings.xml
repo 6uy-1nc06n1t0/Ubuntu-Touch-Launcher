@@ -34,7 +34,7 @@
 
     </LinearLayout>
 
-    <!-- Replaced content with setup permission cards -->
+    <!-- ScrollView content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -53,8 +53,230 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="24dp"
                 android:gravity="center_horizontal">
+
+                <!-- Seção de Formato dos Ícones -->
+                <LinearLayout
+                    android:id="@+id/iconShapeContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/permission_card_bg"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Formato dos Ícones"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Escolha o formato dos ícones dos aplicativos"
+                        android:textColor="#AAAAAA"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp"/>
+
+                    <!-- Visualização dos formatos -->
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:id="@+id/iconShapeOptions"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center">
+
+                            <!-- Original -->
+                            <LinearLayout
+                                android:id="@+id/shapeOriginal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:padding="8dp"
+                                android:layout_marginEnd="8dp">
+
+                                <FrameLayout
+                                    android:layout_width="56dp"
+                                    android:layout_height="56dp"
+                                    android:background="@drawable/icon_shape_selector_bg">
+
+                                    <ImageView
+                                        android:id="@+id/previewOriginal"
+                                        android:layout_width="48dp"
+                                        android:layout_height="48dp"
+                                        android:layout_gravity="center"
+                                        android:src="@mipmap/ic_launcher"/>
+
+                                </FrameLayout>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Original"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="10sp"
+                                    android:layout_marginTop="4dp"/>
+
+                            </LinearLayout>
+
+                            <!-- Squircle -->
+                            <LinearLayout
+                                android:id="@+id/shapeSquircle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:padding="8dp"
+                                android:layout_marginEnd="8dp">
+
+                                <FrameLayout
+                                    android:layout_width="56dp"
+                                    android:layout_height="56dp"
+                                    android:background="@drawable/icon_shape_selector_bg">
+
+                                    <ImageView
+                                        android:id="@+id/previewSquircle"
+                                        android:layout_width="48dp"
+                                        android:layout_height="48dp"
+                                        android:layout_gravity="center"
+                                        android:background="@drawable/icon_shape_squircle"
+                                        android:src="@mipmap/ic_launcher"
+                                        android:clipToOutline="true"/>
+
+                                </FrameLayout>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Squircle"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="10sp"
+                                    android:layout_marginTop="4dp"/>
+
+                            </LinearLayout>
+
+                            <!-- Círculo -->
+                            <LinearLayout
+                                android:id="@+id/shapeCircle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:padding="8dp"
+                                android:layout_marginEnd="8dp">
+
+                                <FrameLayout
+                                    android:layout_width="56dp"
+                                    android:layout_height="56dp"
+                                    android:background="@drawable/icon_shape_selector_bg">
+
+                                    <ImageView
+                                        android:id="@+id/previewCircle"
+                                        android:layout_width="48dp"
+                                        android:layout_height="48dp"
+                                        android:layout_gravity="center"
+                                        android:background="@drawable/icon_shape_circle"
+                                        android:src="@mipmap/ic_launcher"
+                                        android:clipToOutline="true"/>
+
+                                </FrameLayout>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Círculo"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="10sp"
+                                    android:layout_marginTop="4dp"/>
+
+                            </LinearLayout>
+
+                            <!-- Quadrado Arredondado -->
+                            <LinearLayout
+                                android:id="@+id/shapeRoundedSquare"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:padding="8dp"
+                                android:layout_marginEnd="8dp">
+
+                                <FrameLayout
+                                    android:layout_width="56dp"
+                                    android:layout_height="56dp"
+                                    android:background="@drawable/icon_shape_selector_bg">
+
+                                    <ImageView
+                                        android:id="@+id/previewRoundedSquare"
+                                        android:layout_width="48dp"
+                                        android:layout_height="48dp"
+                                        android:layout_gravity="center"
+                                        android:background="@drawable/icon_shape_rounded_square"
+                                        android:src="@mipmap/ic_launcher"
+                                        android:clipToOutline="true"/>
+
+                                </FrameLayout>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Arredondado"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="10sp"
+                                    android:layout_marginTop="4dp"/>
+
+                            </LinearLayout>
+
+                            <!-- Gota -->
+                            <LinearLayout
+                                android:id="@+id/shapeTeardrop"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:padding="8dp">
+
+                                <FrameLayout
+                                    android:layout_width="56dp"
+                                    android:layout_height="56dp"
+                                    android:background="@drawable/icon_shape_selector_bg">
+
+                                    <ImageView
+                                        android:id="@+id/previewTeardrop"
+                                        android:layout_width="48dp"
+                                        android:layout_height="48dp"
+                                        android:layout_gravity="center"
+                                        android:background="@drawable/icon_shape_teardrop"
+                                        android:src="@mipmap/ic_launcher"
+                                        android:clipToOutline="true"/>
+
+                                </FrameLayout>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Gota"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="10sp"
+                                    android:layout_marginTop="4dp"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </HorizontalScrollView>
+
+                </LinearLayout>
 
                 <!-- Launcher Padrão -->
                 <LinearLayout
@@ -419,6 +641,100 @@
                         android:contentDescription="Abrir"/>
 
                 </LinearLayout>
+                
+                <!-- Ajuda e Suporte -->
+                <LinearLayout
+                    android:id="@+id/supportContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/permission_card_bg"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@android:drawable/ic_menu_info_details"
+                        android:contentDescription="Ajuda e Suporte"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Ajuda e Suporte"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Dúvidas, feedback e contato com o desenvolvedor"
+                            android:textColor="#AAAAAA"
+                            android:textSize="12sp"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@android:drawable/ic_menu_more"
+                        android:contentDescription="Abrir"/>
+
+                </LinearLayout>
+
+                <!-- Versão do App -->
+                <LinearLayout
+                    android:id="@+id/versionContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/permission_card_bg"
+                    android:padding="16dp"
+                    android:layout_marginBottom="24dp">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@android:drawable/ic_menu_manage"
+                        android:contentDescription="Versão"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Versão"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/versionText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="v0.1.0 (Beta)"
+                            android:textColor="#AAAAAA"
+                            android:textSize="12sp"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
 
                 <!-- Créditos dos desenvolvedores -->
                 <TextView
@@ -448,7 +764,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text=" e "
+                        android:text="e"
                         android:textColor="#AAAAAA"
                         android:textSize="14sp"/>
 
